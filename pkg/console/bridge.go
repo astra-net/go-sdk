@@ -3,8 +3,8 @@ package console
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/harmony-one/go-sdk/pkg/console/jsre"
-	"github.com/harmony-one/go-sdk/pkg/console/prompt"
+	"github.com/astra-net/go-sdk/pkg/console/jsre"
+	"github.com/astra-net/go-sdk/pkg/console/prompt"
 	"io"
 	"reflect"
 	"strings"

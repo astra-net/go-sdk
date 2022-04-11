@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/validation"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/validation"
 	"github.com/pkg/errors"
 )
 

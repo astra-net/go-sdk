@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	ethCommon "github.com/ethereum/go-ethereum/common"
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/harmony/accounts/keystore"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/astra-network/accounts/keystore"
 
 	// "github.com/ethereum/go-ethereum/crypto"
 

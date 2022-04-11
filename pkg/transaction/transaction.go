@@ -3,10 +3,10 @@ package transaction
 import (
 	"math/big"
 
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
-	"github.com/harmony-one/harmony/core/types"
-	"github.com/harmony-one/harmony/numeric"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/go-sdk/pkg/rpc"
+	"github.com/astra-net/astra-network/core/types"
+	"github.com/astra-net/astra-network/numeric"
 )
 
 // NewTransaction - create a new Transaction based on supplied params

@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/harmony-one/harmony/accounts/keystore"
+	"github.com/astra-net/astra-network/accounts/keystore"
 )
 
 func KeyStoreForPath(p string) *keystore.KeyStore {

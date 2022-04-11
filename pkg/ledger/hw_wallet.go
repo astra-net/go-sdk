@@ -13,9 +13,9 @@ import (
 
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/harmony/core/types"
-	staking "github.com/harmony-one/harmony/staking/types"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/astra-network/core/types"
+	staking "github.com/astra-net/astra-network/staking/types"
 )
 
 var (

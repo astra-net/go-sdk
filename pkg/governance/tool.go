@@ -2,9 +2,9 @@ package governance
 
 import (
 	"fmt"
-	"github.com/harmony-one/harmony/accounts"
-	"github.com/harmony-one/harmony/accounts/keystore"
-	"github.com/harmony-one/harmony/crypto/hash"
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/astra-network/accounts/keystore"
+	"github.com/astra-net/astra-network/crypto/hash"
 	"strconv"
 	"strings"
 	"time"

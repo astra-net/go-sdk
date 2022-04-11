@@ -3,9 +3,9 @@ package account
 import (
 	"errors"
 
-	"github.com/harmony-one/go-sdk/pkg/keys"
-	"github.com/harmony-one/go-sdk/pkg/mnemonic"
-	"github.com/harmony-one/go-sdk/pkg/store"
+	"github.com/astra-net/go-sdk/pkg/keys"
+	"github.com/astra-net/go-sdk/pkg/mnemonic"
+	"github.com/astra-net/go-sdk/pkg/store"
 )
 
 var (

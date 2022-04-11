@@ -10,7 +10,7 @@ documentation on how to use the `hmy` CLI tools
 
 Working directly on this repo can be challenging because of the upstream dependencies. Follow the
 README in the main repo for an already ready development environment:
-https://github.com/harmony-one/harmony/blob/master/README.md.
+https://github.com/astra-net/astra-network/blob/master/README.md.
 
 ...for the impatient:
 

@@ -3,8 +3,8 @@ package rpc
 import (
 	"fmt"
 
-	rpcCommon "github.com/harmony-one/go-sdk/pkg/rpc/common"
-	rpcV1 "github.com/harmony-one/go-sdk/pkg/rpc/v1"
+	rpcCommon "github.com/astra-net/go-sdk/pkg/rpc/common"
+	rpcV1 "github.com/astra-net/go-sdk/pkg/rpc/v1"
 	"github.com/pkg/errors"
 )
 

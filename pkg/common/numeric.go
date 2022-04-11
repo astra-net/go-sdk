@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/harmony-one/harmony/numeric"
+	"github.com/astra-net/astra-network/numeric"
 )
 
 var (

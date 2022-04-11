@@ -7,11 +7,11 @@ import (
 	"path"
 	"time"
 
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	c "github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/harmony/accounts"
-	"github.com/harmony-one/harmony/accounts/keystore"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/go-sdk/pkg/common"
+	c "github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/astra-network/accounts/keystore"
 	"github.com/pkg/errors"
 
 	homedir "github.com/mitchellh/go-homedir"

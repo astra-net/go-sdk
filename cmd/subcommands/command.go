@@ -2,9 +2,9 @@ package cmd
 
 import (
 	ethereum_rpc "github.com/ethereum/go-ethereum/rpc"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/console"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/console"
+	"github.com/astra-net/go-sdk/pkg/rpc"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"log"

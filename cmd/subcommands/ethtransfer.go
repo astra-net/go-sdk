@@ -9,14 +9,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
-	rpcEth "github.com/harmony-one/go-sdk/pkg/rpc/eth"
-	"github.com/harmony-one/go-sdk/pkg/store"
-	"github.com/harmony-one/go-sdk/pkg/transaction"
-	"github.com/harmony-one/harmony/accounts"
-	"github.com/harmony-one/harmony/core"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/rpc"
+	rpcEth "github.com/astra-net/go-sdk/pkg/rpc/eth"
+	"github.com/astra-net/go-sdk/pkg/store"
+	"github.com/astra-net/go-sdk/pkg/transaction"
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/astra-network/core"
 
 	"github.com/spf13/cobra"
 )

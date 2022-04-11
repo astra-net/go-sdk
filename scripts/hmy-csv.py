@@ -21,7 +21,7 @@ For detail help message:
     ./hmy-csv.py --help
 
 Install with:
-    curl -O https://raw.githubusercontent.com/harmony-one/go-sdk/master/scripts/hmy-csv.py && chmod +x hmy-csv.py
+    curl -O https://raw.githubusercontent.com/astra-net/go-sdk/master/scripts/hmy-csv.py && chmod +x hmy-csv.py
 """
 import sys
 import time

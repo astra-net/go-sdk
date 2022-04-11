@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/harmony-one/go-sdk/pkg/governance"
-	"github.com/harmony-one/go-sdk/pkg/store"
-	"github.com/harmony-one/harmony/accounts"
+	"github.com/astra-net/go-sdk/pkg/governance"
+	"github.com/astra-net/go-sdk/pkg/store"
+	"github.com/astra-net/astra-network/accounts"
 	"github.com/spf13/cobra"
 )
 

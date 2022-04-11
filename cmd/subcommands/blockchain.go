@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/rpc"
 	"github.com/spf13/cobra"
 )
 

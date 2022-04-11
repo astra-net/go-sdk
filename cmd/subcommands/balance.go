@@ -6,9 +6,9 @@ import (
 	"net"
 	"strings"
 
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
-	"github.com/harmony-one/go-sdk/pkg/sharding"
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/rpc"
+	"github.com/astra-net/go-sdk/pkg/sharding"
 	"github.com/spf13/cobra"
 )
 

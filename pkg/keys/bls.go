@@ -16,13 +16,13 @@ import (
 	"path"
 	"strings"
 
-	bls_core "github.com/harmony-one/bls/ffi/go/bls"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/sharding"
-	"github.com/harmony-one/go-sdk/pkg/validation"
-	"github.com/harmony-one/harmony/crypto/bls"
-	"github.com/harmony-one/harmony/crypto/hash"
-	"github.com/harmony-one/harmony/staking/types"
+	bls_core "github.com/astra-net/bls/ffi/go/bls"
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/sharding"
+	"github.com/astra-net/go-sdk/pkg/validation"
+	"github.com/astra-net/astra-network/crypto/bls"
+	"github.com/astra-net/astra-network/crypto/hash"
+	"github.com/astra-net/astra-network/staking/types"
 	"golang.org/x/crypto/ssh/terminal"
 )
 

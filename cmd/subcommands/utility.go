@@ -6,10 +6,10 @@ import (
 	"math/big"
 	"strings"
 
-	bls_core "github.com/harmony-one/bls/ffi/go/bls"
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
-	"github.com/harmony-one/harmony/crypto/bls"
+	bls_core "github.com/astra-net/bls/ffi/go/bls"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/go-sdk/pkg/rpc"
+	"github.com/astra-net/astra-network/crypto/bls"
 	"github.com/spf13/cobra"
 )
 

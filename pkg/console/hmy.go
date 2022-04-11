@@ -3,9 +3,9 @@ package console
 import (
 	"fmt"
 	"github.com/dop251/goja"
-	"github.com/harmony-one/harmony/accounts"
-	"github.com/harmony-one/harmony/accounts/keystore"
-	"github.com/harmony-one/harmony/crypto/hash"
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/astra-network/accounts/keystore"
+	"github.com/astra-net/astra-network/crypto/hash"
 	"strconv"
 )
 

@@ -13,11 +13,11 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 	mapset "github.com/deckarep/golang-set"
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/mnemonic"
-	"github.com/harmony-one/go-sdk/pkg/store"
-	"github.com/harmony-one/harmony/accounts/keystore"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/mnemonic"
+	"github.com/astra-net/go-sdk/pkg/store"
+	"github.com/astra-net/astra-network/accounts/keystore"
 )
 
 // ImportFromPrivateKey allows import of an ECDSA private key

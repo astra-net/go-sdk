@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/harmony-one/go-sdk/pkg/store"
-	"github.com/harmony-one/harmony/accounts"
+	"github.com/astra-net/go-sdk/pkg/store"
+	"github.com/astra-net/astra-network/accounts"
 )
 
 var (

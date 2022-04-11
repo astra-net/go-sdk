@@ -3,7 +3,7 @@ package account
 import (
 	"testing"
 
-	"github.com/harmony-one/go-sdk/pkg/store"
+	"github.com/astra-net/go-sdk/pkg/store"
 )
 
 func TestAccountGetsRemoved(t *testing.T) {
