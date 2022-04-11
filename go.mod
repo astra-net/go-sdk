@@ -14,8 +14,8 @@ require (
 	github.com/fatih/color v1.9.0
 	github.com/golang/snappy v0.0.2-0.20200707131729-196ae77b8a26 // indirect
 	github.com/gorilla/handlers v1.4.0 // indirect
-	github.com/harmony-one/bls v0.0.7-0.20191214005344-88c23f91a8a9
-	github.com/harmony-one/harmony v1.10.2-0.20210123081216-6993b9ad0ca1
+	github.com/astra-net/bls v0.0.7-0.20191214005344-88c23f91a8a9
+	github.com/astra-net/astra-network v0.0.0-20220330184351-ed34e9a19043
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365 // indirect
 	github.com/ipfs/go-todocounter v0.0.2 // indirect
 	github.com/jackpal/gateway v1.0.6 // indirect
