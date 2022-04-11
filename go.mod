@@ -1,4 +1,4 @@
-module github.com/harmony-one/go-sdk
+module github.com/astra-net/go-sdk
 
 go 1.14
 
