@@ -11,11 +11,10 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/astra-net/go-sdk/pkg/address"
 	"github.com/astra-net/astra-network/core/types"
 	staking "github.com/astra-net/astra-network/staking/types"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/ethereum/go-ethereum/rlp"
 )
 
 var (
@@ -41,7 +40,7 @@ func GetAddress() string {
 	n := getLedger()
 	oneAddr, err := n.GetAddress()
 	if err != nil {
-		log.Fatalln("Couldn't get one address:", err)
+		log.Fatalln("Couldn't get address:", err)
 		os.Exit(-1)
 	}
 
@@ -53,7 +52,7 @@ func ProcessAddressCommand() {
 	n := getLedger()
 	oneAddr, err := n.GetAddress()
 	if err != nil {
-		log.Fatalln("Couldn't get one address:", err)
+		log.Fatalln("Couldn't get address:", err)
 		os.Exit(-1)
 	}
 
@@ -117,7 +116,8 @@ func SignTx(tx *types.Transaction, chainID *big.Int) ([]byte, string, error) {
 	}
 
 	pubBytes := crypto.Keccak256(pubkey[1:65])[12:]
-	signerAddr, _ := address.ConvertAndEncode("one", pubBytes)
+	pubKey, _ := crypto.UnmarshalPubkey(pubBytes)
+	signerAddr := crypto.PubkeyToAddress(*pubKey)
 
 	var r, s, v *big.Int
 	if chainID != nil {
@@ -147,7 +147,7 @@ func SignTx(tx *types.Transaction, chainID *big.Int) ([]byte, string, error) {
 			s,
 		})
 
-	return rawTx, signerAddr, err
+	return rawTx, signerAddr.String(), err
 }
 
 func frontierSignatureValues(sig []byte) (r, s, v *big.Int, err error) {
@@ -217,9 +217,10 @@ func SignStakingTx(tx *staking.StakingTransaction, chainID *big.Int) (*staking.S
 	}
 
 	pubBytes := crypto.Keccak256(pubkey[1:65])[12:]
-	signerAddr, _ := address.ConvertAndEncode("one", pubBytes)
+	pubKey, _ := crypto.UnmarshalPubkey(pubBytes)
+	signerAddr := crypto.PubkeyToAddress(*pubKey)
 
 	// WithSignature returns a new transaction with the given signature.
 	rawTx, err := tx.WithSignature(staking.NewEIP155Signer(chainID), sig[:])
-	return rawTx, signerAddr, err
+	return rawTx, signerAddr.String(), err
 }

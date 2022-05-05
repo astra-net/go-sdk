@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	DefaultConfigDirName               = ".hmy_cli"
+	DefaultConfigDirName               = ".astra_cli"
 	DefaultConfigAccountAliasesDirName = "account-keys"
 	DefaultCommandAliasesDirName       = "command"
 	DefaultPassphrase                  = ""
@@ -28,13 +28,13 @@ var (
 )
 
 func init() {
-	if _, enabled := os.LookupEnv("HMY_RPC_DEBUG"); enabled != false {
+	if _, enabled := os.LookupEnv("ASTRA_RPC_DEBUG"); enabled != false {
 		DebugRPC = true
 	}
-	if _, enabled := os.LookupEnv("HMY_TX_DEBUG"); enabled != false {
+	if _, enabled := os.LookupEnv("ASTRA_TX_DEBUG"); enabled != false {
 		DebugTransaction = true
 	}
-	if _, enabled := os.LookupEnv("HMY_ALL_DEBUG"); enabled != false {
+	if _, enabled := os.LookupEnv("ASTRA_ALL_DEBUG"); enabled != false {
 		EnableAllVerbose()
 	}
 }

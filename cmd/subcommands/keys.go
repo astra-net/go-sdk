@@ -120,7 +120,7 @@ func keysSub() []*cobra.Command {
 
 	cmdLocation := &cobra.Command{
 		Use:   "location",
-		Short: "Show where `hmy` keeps accounts & their keys",
+		Short: "Show where `astra` keeps accounts & their keys",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println(store.DefaultLocation())
 			return nil
@@ -144,7 +144,7 @@ func keysSub() []*cobra.Command {
 				Passphrase: passphrase,
 			}
 			if recoverFromMnemonic {
-				fmt.Fprintf(os.Stderr, "deprecated method: use `./hmy keys recover-from-mnemonic` instead.\n")
+				fmt.Fprintf(os.Stderr, "deprecated method: use `./astra keys recover-from-mnemonic` instead.\n")
 				fmt.Println("Enter mnemonic to recover keys from")
 				scanner := bufio.NewScanner(os.Stdin)
 				scanner.Scan()
@@ -162,7 +162,7 @@ func keysSub() []*cobra.Command {
 				fmt.Println(acc.Mnemonic)
 			}
 			addr, _ := store.AddressFromAccountName(acc.Name)
-			fmt.Printf("ONE Address: %s\n", addr)
+			fmt.Printf("ADDRESS: %s\n", addr)
 			return nil
 		},
 	}
@@ -220,7 +220,7 @@ func keysSub() []*cobra.Command {
 			}
 			fmt.Println("Successfully recovered account from mnemonic!")
 			addr, _ := store.AddressFromAccountName(acc.Name)
-			fmt.Printf("ONE Address: %s\n", addr)
+			fmt.Printf("ADDRESS: %s\n", addr)
 			return nil
 		},
 	}
@@ -244,7 +244,7 @@ func keysSub() []*cobra.Command {
 			if !quietImport && err == nil {
 				fmt.Printf("Imported keystore given account alias of `%s`\n", name)
 				addr, _ := store.AddressFromAccountName(name)
-				fmt.Printf("ONE Address: %s\n", addr)
+				fmt.Printf("ADDRESS: %s\n", addr)
 			}
 			return err
 		},
@@ -270,7 +270,7 @@ func keysSub() []*cobra.Command {
 			if !quietImport && err == nil {
 				fmt.Printf("Imported keystore given account alias of `%s`\n", name)
 				addr, _ := store.AddressFromAccountName(name)
-				fmt.Printf("ONE Address: %s\n", addr)
+				fmt.Printf("ADDRESS: %s\n", addr)
 			}
 			return err
 		},
@@ -341,7 +341,7 @@ func keysSub() []*cobra.Command {
 		Short: "Generates multiple bls keys for a given shard network configuration and then encrypts and saves the private key with a requested passphrase",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := validation.ValidateNodeConnection(node); err != nil {
-				fmt.Fprintf(os.Stderr, "Cannot connect to node %v, using Harmony mainnet endpoint %v\n",
+				fmt.Fprintf(os.Stderr, "Cannot connect to node %v, using Astra mainnet endpoint %v\n",
 					node, defaultMainnetEndpoint)
 				node = defaultMainnetEndpoint
 			}

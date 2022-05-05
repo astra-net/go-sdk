@@ -5,15 +5,15 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/astra-net/go-sdk/pkg/address"
-	"github.com/astra-net/go-sdk/pkg/common"
-	"github.com/astra-net/go-sdk/pkg/rpc"
 	"github.com/astra-net/astra-network/accounts"
 	"github.com/astra-net/astra-network/accounts/keystore"
 	"github.com/astra-net/astra-network/core/types"
 	"github.com/astra-net/astra-network/numeric"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/rpc"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/rlp"
 )
 
 type ethTransactionForRPC struct {
@@ -136,7 +136,7 @@ func (C *EthController) setAmount(amount numeric.Dec) {
 	}
 	balanceRPCReply, err := C.messenger.SendRPC(
 		rpc.Method.GetBalance,
-		p{address.ToBech32(C.sender.account.Address), "latest"},
+		p{C.sender.account.Address, "latest"},
 	)
 	if err != nil {
 		C.executionError = err
@@ -214,7 +214,7 @@ func (C *EthController) signAndPrepareTxEncodedForSending() {
 		C.executionError = err
 		return
 	}
-	if strings.Compare(signerAddr, address.ToBech32(C.sender.account.Address)) != 0 {
+	if strings.Compare(signerAddr, C.sender.account.Address) != 0 {
 		C.executionError = ErrBadTransactionParam
 		errorMsg := "signature verification failed : sender address doesn't match with ledger hardware addresss"
 		C.transactionErrors = append(C.transactionErrors, &Error{

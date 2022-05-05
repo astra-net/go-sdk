@@ -9,14 +9,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/astra-network/core/vm"
 	"github.com/astra-net/go-sdk/pkg/address"
 	"github.com/astra-net/go-sdk/pkg/common"
 	"github.com/astra-net/go-sdk/pkg/rpc"
 	rpcEth "github.com/astra-net/go-sdk/pkg/rpc/eth"
 	"github.com/astra-net/go-sdk/pkg/store"
 	"github.com/astra-net/go-sdk/pkg/transaction"
-	"github.com/astra-net/astra-network/accounts"
-	"github.com/astra-net/astra-network/core"
 
 	"github.com/spf13/cobra"
 )
@@ -81,7 +81,7 @@ func ethHandlerForTransaction(txLog *transactionLog) error {
 
 	var gLimit uint64
 	if gasLimit == "" {
-		gLimit, err = core.IntrinsicGas([]byte(""), false, true, true, false)
+		gLimit, err = vm.IntrinsicGas([]byte(""), false, true, true, false)
 		if handlerForError(txLog, err) != nil {
 			return err
 		}
@@ -201,7 +201,7 @@ func init() {
 		Short: "Create and send an Ethereum compatible transaction",
 		Args:  cobra.ExactArgs(0),
 		Long: `
-Create an Ethereum compatible transaction, sign it, and send off to the Harmony blockchain
+Create an Ethereum compatible transaction, sign it, and send off to the Astra blockchain
 `,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if givenFilePath == "" {
@@ -266,8 +266,8 @@ Create an Ethereum compatible transaction, sign it, and send off to the Harmony 
 		},
 	}
 
-	cmdEthTransfer.Flags().Var(&fromAddress, "from", "sender's one address, keystore must exist locally")
-	cmdEthTransfer.Flags().Var(&toAddress, "to", "the destination one address")
+	cmdEthTransfer.Flags().Var(&fromAddress, "from", "sender's address, keystore must exist locally")
+	cmdEthTransfer.Flags().Var(&toAddress, "to", "the destination address")
 	cmdEthTransfer.Flags().BoolVar(&dryRun, "dry-run", false, "do not send signed transaction")
 	cmdEthTransfer.Flags().BoolVar(&trueNonce, "true-nonce", false, "send transaction with on-chain nonce")
 	cmdEthTransfer.Flags().StringVar(&amount, "amount", "0", "amount to send (ONE)")

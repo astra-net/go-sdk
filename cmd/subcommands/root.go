@@ -4,20 +4,21 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/astra-net/go-sdk/pkg/address"
 	"net/http"
 	"os"
 	"path"
 	"regexp"
 	"strings"
 
-	color "github.com/fatih/color"
+	"github.com/astra-net/go-sdk/pkg/address"
+
 	"github.com/astra-net/go-sdk/pkg/common"
 	"github.com/astra-net/go-sdk/pkg/rpc"
 	rpcEth "github.com/astra-net/go-sdk/pkg/rpc/eth"
 	rpcV1 "github.com/astra-net/go-sdk/pkg/rpc/v1"
 	"github.com/astra-net/go-sdk/pkg/sharding"
 	"github.com/astra-net/go-sdk/pkg/store"
+	color "github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
@@ -51,15 +52,15 @@ var (
 	}
 	// RootCmd is single entry point of the CLI
 	RootCmd = &cobra.Command{
-		Use:          "hmy",
-		Short:        "Harmony blockchain",
+		Use:          "astra",
+		Short:        "Astra blockchain",
 		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if verbose {
 				common.EnableAllVerbose()
 			}
 			switch rpcPrefix {
-			case "hmy":
+			case "astra":
 				rpc.Method = rpcV1.Method
 			case "eth":
 				rpc.Method = rpcEth.Method
@@ -95,7 +96,7 @@ var (
 					}
 				} else if endpoint.Match([]byte(node)) {
 					chainName = endpointToChainID(node)
-				} else if strings.Contains(node, "api.harmony.one") {
+				} else if strings.Contains(node, "api.astranetwork.com") {
 					chainName = chainIDWrapper{chainID: &common.Chain.MainNet}
 				} else {
 					chainName = chainIDWrapper{chainID: &common.Chain.TestNet}
@@ -111,9 +112,9 @@ var (
 			return nil
 		},
 		Long: fmt.Sprintf(`
-CLI interface to the Harmony blockchain
+CLI interface to the Astra blockchain
 
-%s`, g("Invoke 'hmy cookbook' for examples of the most common, important usages")),
+%s`, g("Invoke 'astra cookbook' for examples of the most common, important usages")),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()
 			return nil
@@ -122,7 +123,7 @@ CLI interface to the Harmony blockchain
 )
 
 func init() {
-	vS := "dump out debug information, same as env var HMY_ALL_DEBUG=true"
+	vS := "dump out debug information, same as env var ASTRA_ALL_DEBUG=true"
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, vS)
 	RootCmd.PersistentFlags().StringVarP(&node, "node", "n", defaultNodeAddr, "<host>")
 	RootCmd.PersistentFlags().StringVarP(&rpcPrefix, "rpc-prefix", "r", defaultRpcPrefix, "<rpc>")
@@ -138,19 +139,19 @@ func init() {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var docNode, docNet string
 			if node == defaultNodeAddr || chainName.chainID == &common.Chain.MainNet {
-				docNode = `https://api.s0.t.hmny.io`
+				docNode = `https://rpc.s0.m.astranetwork.com`
 				docNet = `Mainnet`
 			} else if chainName.chainID == &common.Chain.TestNet {
-				docNode = `https://api.s0.b.hmny.io`
+				docNode = `https://rpc.s0.t.astranetwork.com`
 				docNet = `Long-Running Testnet`
 			} else if chainName.chainID == &common.Chain.PangaeaNet {
-				docNode = `https://api.s0.os.hmny.io`
+				docNode = `https://rpc.s0.os.astranetwork.com`
 				docNet = `Open Staking Network`
 			} else if chainName.chainID == &common.Chain.PartnerNet {
-				docNode = `https://api.s0.ps.hmny.io`
+				docNode = `https://rpc.s0.ps.astranetwork.com`
 				docNet = `Partner Testnet`
 			} else if chainName.chainID == &common.Chain.StressNet {
-				docNode = `https://api.s0.stn.hmny.io`
+				docNode = `https://rpc.s0.stn.astranetwork.com`
 				docNet = `Stress Testing Network`
 			}
 			fmt.Print(strings.ReplaceAll(strings.ReplaceAll(cookbookDoc, `[NODE]`, docNode), `[NETWORK]`, docNet))
@@ -161,10 +162,10 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&givenFilePath, "file", "", "Path to file for given command when applicable")
 	RootCmd.AddCommand(&cobra.Command{
 		Use:   "docs",
-		Short: fmt.Sprintf("Generate docs to a local %s directory", hmyDocsDir),
+		Short: fmt.Sprintf("Generate docs to a local %s directory", astraDocsDir),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cwd, _ := os.Getwd()
-			docDir := path.Join(cwd, hmyDocsDir)
+			docDir := path.Join(cwd, astraDocsDir)
 			os.Mkdir(docDir, 0700)
 			doc.GenMarkdownTree(RootCmd, docDir)
 			return nil
@@ -175,12 +176,12 @@ func init() {
 var (
 	// VersionWrapDump meant to be set from main.go
 	VersionWrapDump = ""
-	cookbook        = color.GreenString("hmy cookbook")
-	versionLink     = "https://harmony.one/hmycli_ver"
+	cookbook        = color.GreenString("astra cookbook")
+	versionLink     = "https://astranetwork.com/astracli_ver"
 	versionFormat   = regexp.MustCompile("v[0-9]+-[a-z0-9]{7}")
 )
 
-// Execute kicks off the hmy CLI
+// Execute kicks off the astra CLI
 func Execute() {
 	RootCmd.SilenceErrors = true
 	if err := RootCmd.Execute(); err != nil {
@@ -225,22 +226,16 @@ func endpointToChainID(nodeAddr string) chainIDWrapper {
 }
 
 func validateAddress(cmd *cobra.Command, args []string) error {
-	// Check if input valid one address
-	tmpAddr := oneAddress{}
-	if err := tmpAddr.Set(args[0]); err != nil {
-		// Check if input is valid account name
-		if acc, err := store.AddressFromAccountName(args[0]); err == nil {
-			addr = oneAddress{acc}
-			return nil
-		}
-
-		bech32Addr := address.ToBech32(address.Parse(args[0]))
-		if bech32Addr == "" {
-			return fmt.Errorf("Invalid one address/Invalid account name: %s", args[0])
-		}
-
-		tmpAddr = oneAddress{bech32Addr}
+	// Check if input valid address
+	// Check if input is valid account name
+	if _, err := store.AddressFromAccountName(args[0]); err == nil {
+		return nil
 	}
-	addr = tmpAddr
+
+	addr := address.Parse(args[0])
+	if addr.String() == "" {
+		return fmt.Errorf("Invalid address/Invalid account name: %s", args[0])
+	}
+
 	return nil
 }

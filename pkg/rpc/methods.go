@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	RPCPrefix                       = "hmy"
+	RPCPrefix                       = "astra"
 	Method    rpcCommon.RpcEnumList = rpcV1.Method
 )
 

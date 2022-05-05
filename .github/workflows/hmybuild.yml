@@ -1,4 +1,4 @@
-name: release hmy
+name: release astra
 
 on:
   push:
@@ -6,26 +6,23 @@ on:
       - v*
 
 jobs:
-
   build-x8664:
-    name: Build hmy binary for Linux x8664
+    name: Build astra binary for Linux x8664
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-18.04 ]
+        os: [ubuntu-18.04]
 
     steps:
-
       - name: Set up Go 1.16.5
         uses: actions/setup-go@v2
         with:
           go-version: 1.16.5
 
-
-      - name: Checkout hmy code
+      - name: Checkout astra code
         uses: actions/checkout@v2
         with:
-          path: go/src/github.com/harmony-one/go-sdk
+          path: go/src/github.com/astra-net/go-sdk
 
       - name: Debug
         run: |
@@ -40,31 +37,28 @@ jobs:
       - name: Checkout dependence repo
         uses: actions/checkout@v2
         with:
-          repository: harmony-one/mcl
-          path: go/src/github.com/harmony-one/mcl
+          repository: astra-net/mcl
+          path: go/src/github.com/astra-net/mcl
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
       - name: Checkout dependence repo
         uses: actions/checkout@v2
         with:
-          repository: harmony-one/bls
-          path: go/src/github.com/harmony-one/bls
+          repository: astra-net/bls
+          path: go/src/github.com/astra-net/bls
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
       - name: Checkout dependence code
         uses: actions/checkout@v2
         with:
-          repository: harmony-one/harmony
-          path: go/src/github.com/harmony-one/harmony
+          repository: astra-net/astra-network
+          path: go/src/github.com/astra-net/astra-network
           ref: main
           fetch-depth: 0
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
-
-
-
 
       - name: Get latest version and release
         run: |
@@ -72,29 +66,29 @@ jobs:
           RELEASE=$(git describe --long | cut -f2 -d-)
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
-        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
+        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/astra-net/go-sdk
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
-      - name: Build hmy binary for Linux
+      - name: Build astra binary for Linux
         if: matrix.os == 'ubuntu-18.04'
         run: |
           make static
-        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
+        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/astra-net/go-sdk
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: hmy
-          path: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk/dist/*
+          name: astra
+          path: /home/runner/work/go-sdk/go-sdk/go/src/github.com/astra-net/go-sdk/dist/*
           retention-days: 1
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
   # build-arm64:
-  #   name: Build hmy binary
+  #   name: Build astra binary
   #   runs-on: ${{ matrix.os }}
   #   strategy:
   #     matrix:
@@ -107,11 +101,10 @@ jobs:
   #       with:
   #         go-version: 1.16.5
 
-
-  #     - name: Checkout hmy code
+  #     - name: Checkout astra code
   #       uses: actions/checkout@v2
   #       with:
-  #         path: go/src/github.com/harmony-one/go-sdk
+  #         path: go/src/github.com/astra-net/go-sdk
 
   #     - name: Debug
   #       run: |
@@ -126,66 +119,65 @@ jobs:
   #     - name: Checkout dependence repo
   #       uses: actions/checkout@v2
   #       with:
-  #         repository: harmony-one/mcl
-  #         path: go/src/github.com/harmony-one/mcl
+  #         repository: astra-net/mcl
+  #         path: go/src/github.com/astra-net/mcl
   #       env:
   #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
   #     - name: Checkout dependence repo
   #       uses: actions/checkout@v2
   #       with:
-  #         repository: harmony-one/bls
-  #         path: go/src/github.com/harmony-one/bls
+  #         repository: astra-net/bls
+  #         path: go/src/github.com/astra-net/bls
   #       env:
   #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
   #     - name: Checkout dependence code
   #       uses: actions/checkout@v2
   #       with:
-  #         repository: harmony-one/harmony
-  #         path: go/src/github.com/harmony-one/harmony
+  #         repository: astra-net/astra-network
+  #         path: go/src/github.com/astra-net/astra-network
   #         ref: main
   #         fetch-depth: 0
   #       env:
   #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
-  #     - name: Build hmy binary for Arm
+  #     - name: Build astra binary for Arm
   #       run: |
   #         make static
-  #         mv dist/hmy dist/hmy-arm64
-  #         chmod +x dist/hmy-arm64
-  #       working-directory: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
+  #         mv dist/astra dist/astra-arm64
+  #         chmod +x dist/astra-arm64
+  #       working-directory: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/astra-net/go-sdk
   #       env:
   #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
   #     - name: Upload artifact
   #       uses: actions/upload-artifact@v2
   #       with:
-  #         name: hmy-arm64
-  #         path: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk/dist/*
+  #         name: astra-arm64
+  #         path: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/astra-net/go-sdk/dist/*
   #         retention-days: 1
   #       env:
   #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
   release-page:
     name: Sign binary and create and publish release page
-    needs: [ build-x8664 ]
+    needs: [build-x8664]
     runs-on: ubuntu-18.04
 
     steps:
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@v3
         with:
-          gpg-private-key: ${{ secrets.HMY_GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.HMY_GPG_PRIVATE_KEY_PASS }}
+          gpg-private-key: ${{ secrets.ASTRA_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.ASTRA_GPG_PRIVATE_KEY_PASS }}
 
-      - name: Checkout hmy core code
+      - name: Checkout astra core code
         uses: actions/checkout@v2
         with:
-          path: go/src/github.com/harmony-one/go-sdk
+          path: go/src/github.com/astra-net/go-sdk
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
-
 
       - name: Get latest version
         run: |
@@ -195,31 +187,29 @@ jobs:
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_version_long=$VERSION_LONG" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
-        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
+        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/astra-net/go-sdk
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: hmy
+          name: astra
 
-      - name: Signed amd64 hmy binary
+      - name: Signed amd64 astra binary
         run: |
-          gpg --detach-sign hmy
-          sha256sum hmy >> hmy.sha256
+          gpg --detach-sign astra
+          sha256sum astra >> astra.sha256
 
       # - name: Download artifact
       #   uses: actions/download-artifact@v2
       #   with:
-      #     name: hmy-arm64
+      #     name: astra-arm64
 
-      # - name: Signed arm64 hmy binary
+      # - name: Signed arm64 astra binary
       #   run: |
-      #     gpg --detach-sign hmy-arm64
-      #     sha256sum hmy-arm64 >> hmy-arm64.sha256
-
-
+      #     gpg --detach-sign astra-arm64
+      #     sha256sum astra-arm64 >> astra-arm64.sha256
 
       - name: Get tag message
         env:
@@ -228,9 +218,7 @@ jobs:
         run: |
           touch ./tag_message.md
           echo -e "$TAG_SHA\n\nThe released version: $build_version_long" >> ./tag_message.md
-        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
-
-
+        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/astra-net/go-sdk
 
       - name: Create Release
         id: create_release
@@ -243,74 +231,66 @@ jobs:
           release_name: Mainnet Release ${{ env.build_version }}
           draft: true
           prerelease: false
-          body_path: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk/tag_message.md
+          body_path: /home/runner/work/go-sdk/go-sdk/go/src/github.com/astra-net/go-sdk/tag_message.md
 
-
-
-      - name: Upload hmy binary for Linux (amd64)
+      - name: Upload astra binary for Linux (amd64)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./hmy
-          asset_name: hmy
+          asset_path: ./astra
+          asset_name: astra
           asset_content_type: application/octet-stream
 
-      - name: Upload sha256 signature of hmy amd64 binary
+      - name: Upload sha256 signature of astra amd64 binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./hmy.sha256
-          asset_name: hmy.sha256
+          asset_path: ./astra.sha256
+          asset_name: astra.sha256
           asset_content_type: text/plain
 
-      - name: Upload gpg signature of hmy amd64 binary
+      - name: Upload gpg signature of astra amd64 binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./hmy.sig
-          asset_name: hmy.sig
+          asset_path: ./astra.sig
+          asset_name: astra.sig
           asset_content_type: application/octet-stream
 
-
-      # - name: Upload hmy binary for ARM64
+      # - name: Upload astra binary for ARM64
       #   uses: actions/upload-release-asset@v1
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #     GOPATH: /home/runner/work/go-sdk/go-sdk/go
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./hmy-arm64
-      #     asset_name: hmy-arm64
+      #     asset_path: ./astra-arm64
+      #     asset_name: astra-arm64
       #     asset_content_type: application/octet-stream
 
-      # - name: Upload sha256 signature of hmy arm64 binary
+      # - name: Upload sha256 signature of astra arm64 binary
       #   uses: actions/upload-release-asset@v1
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./hmy-arm64.sha256
-      #     asset_name: hmy-arm64.sha256
+      #     asset_path: ./astra-arm64.sha256
+      #     asset_name: astra-arm64.sha256
       #     asset_content_type: text/plain
 
-      # - name: Upload gpg signature of hmy arm64 binary
+      # - name: Upload gpg signature of astra arm64 binary
       #   uses: actions/upload-release-asset@v1
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./hmy-arm64.sig
-      #     asset_name: hmy-arm64.sig
+      #     asset_path: ./astra-arm64.sig
+      #     asset_name: astra-arm64.sig
       #     asset_content_type: application/octet-stream
-
-          
-        
-
-   

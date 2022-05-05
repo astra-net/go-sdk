@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/astra-net/go-sdk/pkg/store"
 	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/go-sdk/pkg/store"
 )
 
 var (

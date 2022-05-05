@@ -7,11 +7,11 @@ import (
 	"path"
 	"time"
 
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/astra-network/accounts/keystore"
 	"github.com/astra-net/go-sdk/pkg/address"
 	"github.com/astra-net/go-sdk/pkg/common"
 	c "github.com/astra-net/go-sdk/pkg/common"
-	"github.com/astra-net/astra-network/accounts"
-	"github.com/astra-net/astra-network/accounts/keystore"
 	"github.com/pkg/errors"
 
 	homedir "github.com/mitchellh/go-homedir"
@@ -19,9 +19,9 @@ import (
 
 func init() {
 	uDir, _ := homedir.Dir()
-	hmyCLIDir := path.Join(uDir, common.DefaultConfigDirName, common.DefaultConfigAccountAliasesDirName)
-	if _, err := os.Stat(hmyCLIDir); os.IsNotExist(err) {
-		os.MkdirAll(hmyCLIDir, 0700)
+	astraCLIDir := path.Join(uDir, common.DefaultConfigDirName, common.DefaultConfigAccountAliasesDirName)
+	if _, err := os.Stat(astraCLIDir); os.IsNotExist(err) {
+		os.MkdirAll(astraCLIDir, 0700)
 	}
 }
 
@@ -47,14 +47,14 @@ var (
 	NoUnlockBadPassphrase = errors.New("could not unlock wallet with given passphrase")
 )
 
-// DescribeLocalAccounts will display all the account alias name and their corresponding one address
+// DescribeLocalAccounts will display all the account alias name and their corresponding address
 func DescribeLocalAccounts() {
 	fmt.Println(describe)
 	for _, name := range LocalAccounts() {
 		ks := FromAccountName(name)
 		allAccounts := ks.Accounts()
 		for _, account := range allAccounts {
-			fmt.Printf("%-48s\t%s\n", name, address.ToBech32(account.Address))
+			fmt.Printf("%-48s\t%s\n", name, account.Address.String())
 		}
 	}
 }
@@ -70,23 +70,23 @@ func DoesNamedAccountExist(name string) bool {
 	return false
 }
 
-// Returns one address for account name if exists
+// Returns address for account name if exists
 func AddressFromAccountName(name string) (string, error) {
 	ks := FromAccountName(name)
 	// FIXME: Assume 1 account per keystore for now
 	for _, account := range ks.Accounts() {
-		return address.ToBech32(account.Address), nil
+		return account.Address.String(), nil
 	}
 	return "", fmt.Errorf("Keystore not found.")
 }
 
-// FromAddress will return nil if the bech32 string is not found in the imported accounts
-func FromAddress(bech32 string) *keystore.KeyStore {
+// FromAddress will return nil if the address is not found in the imported accounts
+func FromAddress(addr string) *keystore.KeyStore {
 	for _, name := range LocalAccounts() {
 		ks := FromAccountName(name)
 		allAccounts := ks.Accounts()
 		for _, account := range allAccounts {
-			if bech32 == address.ToBech32(account.Address) {
+			if addr == account.Address.String() {
 				return ks
 			}
 		}
@@ -111,7 +111,7 @@ func UnlockedKeystore(from, passphrase string) (*keystore.KeyStore, *accounts.Ac
 
 func LockKeystore(from string) (*keystore.KeyStore, *accounts.Account, error) {
 	sender := address.Parse(from)
-	ks := FromAddress(address.ToBech32(sender))
+	ks := FromAddress(sender.String())
 	if ks == nil {
 		return nil, nil, fmt.Errorf("could not open local keystore for %s", from)
 	}
@@ -127,7 +127,7 @@ func LockKeystore(from string) (*keystore.KeyStore, *accounts.Account, error) {
 
 func UnlockedKeystoreTimeLimit(from, passphrase string, time time.Duration) (*keystore.KeyStore, *accounts.Account, error) {
 	sender := address.Parse(from)
-	ks := FromAddress(address.ToBech32(sender))
+	ks := FromAddress(sender.String())
 	if ks == nil {
 		return nil, nil, fmt.Errorf("could not open local keystore for %s", from)
 	}

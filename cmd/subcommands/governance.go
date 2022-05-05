@@ -2,18 +2,19 @@ package cmd
 
 import (
 	"fmt"
+
+	"github.com/astra-net/astra-network/accounts"
 	"github.com/astra-net/go-sdk/pkg/governance"
 	"github.com/astra-net/go-sdk/pkg/store"
-	"github.com/astra-net/astra-network/accounts"
 	"github.com/spf13/cobra"
 )
 
 func init() {
 	cmdGovernance := &cobra.Command{
 		Use:   "governance",
-		Short: "Support interaction with the Harmony governance app.",
+		Short: "Support interaction with the Astra governance app.",
 		Long: `
-Support interaction with the Harmony governance app, especially for validators that do not want to import their account private key into either metamask or onewallet.
+Support interaction with the Astra governance app, especially for validators that do not want to import their account private key into either metamask or onewallet.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()
@@ -101,7 +102,7 @@ func commandNewProposal() (cmd *cobra.Command) {
 	}
 
 	cmd.Flags().StringVar(&proposal, "proposal-yaml", "", "Proposal yaml path")
-	cmd.Flags().StringVar(&key, "key", "", "Account address. Must first use (hmy keys import-private-key) to import.")
+	cmd.Flags().StringVar(&key, "key", "", "Account address. Must first use (astra keys import-private-key) to import.")
 	cmd.Flags().BoolVar(&userProvidesPassphrase, "passphrase", false, ppPrompt)
 	cmd.MarkFlagRequired("proposal-yaml")
 	cmd.MarkFlagRequired("key")
@@ -140,7 +141,7 @@ func commandVote() (cmd *cobra.Command) {
 
 	cmd.Flags().StringVar(&proposal, "proposal", "", "Proposal hash")
 	cmd.Flags().StringVar(&choice, "choice", "", "Vote choice e.g. 'agree' or 'disagree'")
-	cmd.Flags().StringVar(&key, "key", "", "Account address. Must first use (hmy keys import-private-key) to import.")
+	cmd.Flags().StringVar(&key, "key", "", "Account address. Must first use (astra keys import-private-key) to import.")
 	cmd.Flags().BoolVar(&userProvidesPassphrase, "passphrase", false, ppPrompt)
 	cmd.MarkFlagRequired("proposal")
 	cmd.MarkFlagRequired("choose")

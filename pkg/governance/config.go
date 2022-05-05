@@ -11,7 +11,7 @@ const (
 	urlListProposalsBySpace                = backendAddress + "%s/proposals"
 	urlListProposalsVoteBySpaceAndProposal = backendAddress + "%s/proposal/%s"
 	urlMessage                             = backendAddress + "message"
-	urlGetValidatorsInTestNet              = "https://api.stake.hmny.io/networks/testnet/validators"
-	urlGetValidatorsInMainNet              = "https://api.stake.hmny.io/networks/mainnet/validators"
+	urlGetValidatorsInTestNet              = "https://rpc.stake.astranetwork.com/networks/testnet/validators"
+	urlGetValidatorsInMainNet              = "https://rpc.stake.astranetwork.com/networks/mainnet/validators"
 	urlGetProposalInfo                     = "https://gateway.ipfs.io/ipfs/%s"
 )

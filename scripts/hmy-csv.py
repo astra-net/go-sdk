@@ -9,19 +9,19 @@ Due to a possible Nonce mismatch, it is recommended to NOT have 1 'from' address
 appear in multiple CSV files that are ran at the same time.
 
 Example:
-    ./hmy-csv.py /path/to/csv/file.csv --node https://api.s0.t.hmny.io/
-    ./hmy-csv.py /path/to/csv/file.csv --fast -n https://api.s0.t.hmny.io/
-    ./hmy-csv.py /path/to/csv/file.csv --fast --use-default-passphrase --yes -n https://api.s0.t.hmny.io/
-    ./hmy-csv.py /path/to/csv/file.csv --fast --use-default-passphrase --yes --batch-size 100 -n https://api.s0.t.hmny.io/
+    ./astra-csv.py /path/to/csv/file.csv --node https://rpc.s0.m.astranetwork.com/
+    ./astra-csv.py /path/to/csv/file.csv --fast -n https://rpc.s0.m.astranetwork.com/
+    ./astra-csv.py /path/to/csv/file.csv --fast --use-default-passphrase --yes -n https://rpc.s0.m.astranetwork.com/
+    ./astra-csv.py /path/to/csv/file.csv --fast --use-default-passphrase --yes --batch-size 100 -n https://rpc.s0.m.astranetwork.com/
 
 Sample CSV file:
     https://docs.google.com/spreadsheets/d/1nkF8N16S3y28cn7SM1cYJca8lzHPOzyR42S1V-OOAeQ/edit?usp=sharing
 
 For detail help message:
-    ./hmy-csv.py --help
+    ./astra-csv.py --help
 
 Install with:
-    curl -O https://raw.githubusercontent.com/astra-net/go-sdk/master/scripts/hmy-csv.py && chmod +x hmy-csv.py
+    curl -O https://raw.githubusercontent.com/astra-net/go-sdk/master/scripts/astra-csv.py && chmod +x astra-csv.py
 """
 import sys
 import time
@@ -36,7 +36,7 @@ import json
 import ssl
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
-_hmy_call_and_prefix = [f"{script_directory}/hmy"]
+_astra_call_and_prefix = [f"{script_directory}/astra"]
 chain_id_options = {"mainnet", "testnet", "stressnet", "partner", "dryrun"}
 default_passphrase = ""
 
@@ -57,19 +57,19 @@ class Typgpy(str):
     UNDERLINE = '\033[4m'
 
 
-def _hmy(cli_args, timeout=200):
+def _astra(cli_args, timeout=200):
     """
     Helper function to call the CLI with the given args.
 
-    Assumes `_setup_hmy` has been called prior to using this function.
+    Assumes `_setup_astra` has been called prior to using this function.
 
     Raises subprocess.CalledProcessError if call errored.
     """
     assert isinstance(cli_args, list)
-    hmy_and_args = _hmy_call_and_prefix + [str(x) for x in cli_args]
+    astra_and_args = _astra_call_and_prefix + [str(x) for x in cli_args]
     if args.verbose:
-        hmy_and_args.append("--verbose")
-    return subprocess.check_output(hmy_and_args, env=os.environ, timeout=timeout).decode()
+        astra_and_args.append("--verbose")
+    return subprocess.check_output(astra_and_args, env=os.environ, timeout=timeout).decode()
 
 
 def get_shard_count(node):
@@ -79,7 +79,7 @@ def get_shard_count(node):
     Will raise a KeyError if the RPC returns back an error.
     Will raise a subprocess.CalledProcessError if CLI errored.
     """
-    response = _hmy(["utility", "shards", "-n", node])
+    response = _astra(["utility", "shards", "-n", node])
     return len(json.loads(response)['result'])
 
 
@@ -102,7 +102,7 @@ def send_transactions(transactions, batch_size, node, chain_id, timeout=40, fast
 
     for i in range(0, len(transactions), batch_size):
         batch_tx = transactions[i: i + batch_size]
-        temp_file = f"/tmp/hmy-csv-{hash(str(batch_tx))}.json"
+        temp_file = f"/tmp/astra-csv-{hash(str(batch_tx))}.json"
         batch_log_file = f"{script_directory}/batch_tx_{time.time()}.log"
         with open(temp_file, "w") as f:
             json.dump(batch_tx, f)  # Assume to work since `transactions` should be built by `parse_csv`
@@ -110,15 +110,15 @@ def send_transactions(transactions, batch_size, node, chain_id, timeout=40, fast
         print(
             f"{Typgpy.OKBLUE}Sending a batch of {Typgpy.OKGREEN}{len(batch_tx)}{Typgpy.OKBLUE} transaction(s){Typgpy.ENDC}")
         print(f"{Typgpy.OKBLUE}Logs for this batch will be at {Typgpy.OKGREEN}{batch_log_file}{Typgpy.ENDC}")
-        hmy_args = ["transfer", "--file", temp_file, "--node", node]
+        astra_args = ["transfer", "--file", temp_file, "--node", node]
         if chain_id:
-            hmy_args.extend(["--chain-id", chain_id])
+            astra_args.extend(["--chain-id", chain_id])
         if fast:
-            hmy_args.extend(["--timeout", "0"])
+            astra_args.extend(["--timeout", "0"])
         else:
-            hmy_args.extend(["--timeout", timeout])
+            astra_args.extend(["--timeout", timeout])
         try:
-            output = _hmy(hmy_args, timeout=timeout * len(batch_tx))
+            output = _astra(astra_args, timeout=timeout * len(batch_tx))
         except subprocess.CalledProcessError as e:
             print(f"{Typgpy.FAIL}Transaction failure: {e}{Typgpy.ENDC}")
             print(f"{Typgpy.FAIL}Error output: {e.output.decode()}{Typgpy.ENDC}")
@@ -161,14 +161,6 @@ def parse_csv(path, node, use_default_passphrase=True):
         for i, row in enumerate(filter(row_filter, csv.DictReader(f))):
             sys.stdout.write(f"\rParsing line {i} of {path}")
             sys.stdout.flush()
-            try:
-                _hmy(["utility", "bech32-to-addr", row['from']])
-                _hmy(["utility", "bech32-to-addr", row['to']])
-            except subprocess.CalledProcessError as e:
-                print(f"{e.output}")
-                print(f"{Typgpy.FAIL}Address error on line {i}! From: {row['from']}; To: {row['to']}{Typgpy.ENDC}")
-                print(f"{Typgpy.WARNING}Skipping!{Typgpy.ENDC}")
-                continue
             if not row['from-shard'] or not row['to-shard']:
                 print(f"{Typgpy.FAIL}To and/or from shard is not provided on line {i}!{Typgpy.ENDC}")
                 print(f"{Typgpy.WARNING}Skipping!{Typgpy.ENDC}")
@@ -245,38 +237,38 @@ def sanity_check(args):
         assert args.chain_id in chain_id_options, f"{args.chain_id} not in {chain_id_options}"
 
 
-def _setup_hmy():
+def _setup_astra():
     """
-    Setup `_hmy_call_and_prefix` depending on if hmy.sh exists.
+    Setup `_astra_call_and_prefix` depending on if astra.sh exists.
     """
-    global _hmy_call_and_prefix
-    _hmy_call_and_prefix = [f"{script_directory}/hmy"]
+    global _astra_call_and_prefix
+    _astra_call_and_prefix = [f"{script_directory}/astra"]
     try:
-        _hmy(["version"])
+        _astra(["version"])
         return
     except (subprocess.CalledProcessError, FileNotFoundError):
-        print(f"Unable to execute hmy CLI directly at: '{_hmy_call_and_prefix[0]}'")
-        print(f"Trying to use 'hmy.sh'...")
-    if "hmy.sh" in os.listdir(script_directory):
-        _hmy_call_and_prefix = [f"{script_directory}/hmy.sh", "--"]
+        print(f"Unable to execute astra CLI directly at: '{_astra_call_and_prefix[0]}'")
+        print(f"Trying to use 'astra.sh'...")
+    if "astra.sh" in os.listdir(script_directory):
+        _astra_call_and_prefix = [f"{script_directory}/astra.sh", "--"]
         try:
-            _hmy(["version"])
+            _astra(["version"])
             return
         except subprocess.CalledProcessError as e:
             raise SystemExit(
-                f"'hmy.sh' is unable to execute the CLI. Try downloading the CLI with `./hmy.sh -d`.") from e
+                f"'astra.sh' is unable to execute the CLI. Try downloading the CLI with `./astra.sh -d`.") from e
     else:
-        raise SystemExit(f"'hmy.sh' is not found in script directory {script_directory}. ")
+        raise SystemExit(f"'astra.sh' is not found in script directory {script_directory}. ")
 
 
 def _parse_args():
     """
     Argument parser that is only used for main execution.
     """
-    parser = argparse.ArgumentParser(description='Harmony CLI, transaction from CSV file wrapper script.')
+    parser = argparse.ArgumentParser(description='Astra CLI, transaction from CSV file wrapper script.')
     parser.add_argument("path", type=str, help="The path to the CSV file.")
-    parser.add_argument("--node", "-n", dest="node", default="https://api.s0.t.hmny.io/", type=str,
-                        help="The node or endpoint to send the transactions to, default: 'https://api.s0.t.hmny.io/'.")
+    parser.add_argument("--node", "-n", dest="node", default="https://rpc.s0.m.astranetwork.com/", type=str,
+                        help="The node or endpoint to send the transactions to, default: 'https://rpc.s0.m.astranetwork.com/'.")
     parser.add_argument("--batch-size", dest="batch_size", default=4, type=int,
                         help="Number of transactions to send in 1 batch to the CLI before checking output, default: 4")
     parser.add_argument("--timeout-per-tx", dest="timeout_per_tx", default=40, type=int,
@@ -298,7 +290,7 @@ def _parse_args():
 
 if __name__ == "__main__":
     args = _parse_args()
-    _setup_hmy()
+    _setup_astra()
     sanity_check(args)
     transactions = parse_csv(args.path, args.node, use_default_passphrase=args.use_default_passphrase)
     send_transactions(transactions, args.batch_size, args.node, args.chain_id,

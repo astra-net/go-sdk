@@ -3,21 +3,21 @@ package account
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/mitchellh/go-homedir"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/btcsuite/btcd/btcec"
-	mapset "github.com/deckarep/golang-set"
-	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/mitchellh/go-homedir"
+
+	"github.com/astra-net/astra-network/accounts/keystore"
 	"github.com/astra-net/go-sdk/pkg/common"
 	"github.com/astra-net/go-sdk/pkg/mnemonic"
 	"github.com/astra-net/go-sdk/pkg/store"
-	"github.com/astra-net/astra-network/accounts/keystore"
+	"github.com/btcsuite/btcd/btcec"
+	mapset "github.com/deckarep/golang-set"
 )
 
 // ImportFromPrivateKey allows import of an ECDSA private key
@@ -43,10 +43,10 @@ func ImportFromPrivateKey(privateKey, name, passphrase string) (string, error) {
 
 	// btcec.PrivKeyFromBytes only returns a secret key and public key
 	sk, _ := btcec.PrivKeyFromBytes(btcec.S256(), privateKeyBytes)
-	oneAddress := address.ToBech32(crypto.PubkeyToAddress(sk.PublicKey))
+	addr := crypto.PubkeyToAddress(sk.PublicKey)
 
-	if store.FromAddress(oneAddress) != nil {
-		return "", fmt.Errorf("address %s already exists", oneAddress)
+	if store.FromAddress(addr.String()) != nil {
+		return "", fmt.Errorf("address %s already exists", addr)
 	}
 
 	ks := store.FromAccountName(name)
@@ -124,10 +124,9 @@ func ImportKeyStore(keyPath, name, passphrase string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	b32 := address.ToBech32(key.Address)
-	hasAddress := store.FromAddress(b32) != nil
+	hasAddress := store.FromAddress(key.Address.String()) != nil
 	if hasAddress {
-		return "", fmt.Errorf("address %s already exists in keystore", b32)
+		return "", fmt.Errorf("address %s already exists in keystore", key.Address)
 	}
 	uDir, _ := homedir.Dir()
 	newPath := filepath.Join(uDir, common.DefaultConfigDirName, common.DefaultConfigAccountAliasesDirName, name, filepath.Base(keyPath))

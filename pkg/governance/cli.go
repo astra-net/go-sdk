@@ -4,16 +4,17 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/astra-net/go-sdk/pkg/address"
-	"github.com/astra-net/astra-network/accounts"
-	"github.com/astra-net/astra-network/accounts/keystore"
-	"github.com/olekukonko/tablewriter"
-	"gopkg.in/yaml.v3"
 	"math/rand"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/astra-network/accounts/keystore"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/olekukonko/tablewriter"
+	"gopkg.in/yaml.v3"
 )
 
 func PrintListSpace() error {
@@ -71,7 +72,7 @@ func PrintViewProposal(proposalHash string) error {
 		validators = getValidators(urlGetValidatorsInTestNet)
 	}
 
-	fmt.Printf("Author : %s\n", address.ToBech32(address.Parse(proposals.Address)))
+	fmt.Printf("Author : %s\n", address.Parse(proposals.Address))
 	fmt.Printf("IPFS   : %s\n", proposalHash)
 	fmt.Printf("Space  : %s\n", proposals.parsedMsg.Space)
 	fmt.Printf("Start  : %s\n", timestampToDateString(proposals.parsedMsg.Payload.Start))
@@ -91,8 +92,8 @@ func PrintViewProposal(proposalHash string) error {
 
 	for _, vote := range proposals.votes {
 		stack := "0"
-		addr := address.ToBech32(address.Parse(vote.Address))
-		if v, ok := validators[addr]; ok {
+		addr := address.Parse(vote.Address)
+		if v, ok := validators[addr.String()]; ok {
 			float, err := strconv.ParseFloat(v.TotalStake, 64)
 			if err == nil {
 				stack = fmt.Sprintf("%.2f", float/1e18)
@@ -105,7 +106,7 @@ func PrintViewProposal(proposalHash string) error {
 		}
 
 		table.Append([]string{
-			addr,
+			addr.String(),
 			strings.Join(choices, ", "),
 			stack,
 		})
@@ -215,7 +216,7 @@ func checkPermission(space string, account accounts.Account) bool {
 		return false
 	}
 
-	if _, ok := validators[address.ToBech32(account.Address)]; ok {
+	if _, ok := validators[account.Address.String()]; ok {
 		return true
 	} else {
 		return false

@@ -8,7 +8,7 @@ import (
 	"github.com/tyler-smith/go-bip39"
 )
 
-// FromMnemonicSeedAndPassphrase mimics the Harmony JS sdk in deriving the
+// FromMnemonicSeedAndPassphrase mimics the Astra JS sdk in deriving the
 // private, public key pair from the mnemonic, its index, and empty string password.
 // Note that an index k would be the k-th key generated using the same mnemonic.
 func FromMnemonicSeedAndPassphrase(mnemonic string, index int) (*secp256k1.PrivateKey, *secp256k1.PublicKey) {

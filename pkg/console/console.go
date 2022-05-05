@@ -4,18 +4,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	ethereum_rpc "github.com/ethereum/go-ethereum/rpc"
-	"github.com/astra-net/go-sdk/pkg/account"
-	"github.com/astra-net/go-sdk/pkg/address"
-	"github.com/astra-net/go-sdk/pkg/common"
-	"github.com/astra-net/go-sdk/pkg/console/jsre"
-	"github.com/astra-net/go-sdk/pkg/console/jsre/deps"
-	"github.com/astra-net/go-sdk/pkg/console/prompt"
-	"github.com/astra-net/go-sdk/pkg/console/web3ext"
-	"github.com/astra-net/go-sdk/pkg/rpc"
-	"github.com/astra-net/go-sdk/pkg/store"
-	"github.com/astra-net/go-sdk/pkg/transaction"
-	"github.com/astra-net/astra-network/accounts"
 	"io"
 	"io/ioutil"
 	"math/big"
@@ -28,6 +16,19 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/go-sdk/pkg/account"
+	"github.com/astra-net/go-sdk/pkg/address"
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/console/jsre"
+	"github.com/astra-net/go-sdk/pkg/console/jsre/deps"
+	"github.com/astra-net/go-sdk/pkg/console/prompt"
+	"github.com/astra-net/go-sdk/pkg/console/web3ext"
+	"github.com/astra-net/go-sdk/pkg/rpc"
+	"github.com/astra-net/go-sdk/pkg/store"
+	"github.com/astra-net/go-sdk/pkg/transaction"
+	ethereum_rpc "github.com/ethereum/go-ethereum/rpc"
 
 	"github.com/dop251/goja"
 	"github.com/mattn/go-colorable"
@@ -57,9 +58,9 @@ type Config struct {
 	Prompter prompt.UserPrompter  // Input prompter to allow interactive user feedback (defaults to TerminalPrompter)
 	Printer  io.Writer            // Output writer to serialize any display strings to (defaults to os.Stdout)
 	Preload  []string             // Absolute paths to JavaScript files to preload
-	NodeUrl  string               // Hmy Node url
-	ShardId  int                  // Hmy Shard ID
-	Net      string               // Hmy  Network
+	NodeUrl  string               // Astra Node url
+	ShardId  int                  // Astra Shard ID
+	Net      string               // Astra  Network
 }
 
 // Console is a JavaScript interpreted runtime environment. It is a fully fledged
@@ -73,9 +74,9 @@ type Console struct {
 	histPath string               // Absolute path to the console scrollback history
 	history  []string             // Scroll history maintained by the console
 	printer  io.Writer            // Output writer to serialize any display strings to
-	nodeUrl  string               // Hmy Node url
-	shardId  int                  // Hmy Shard ID
-	net      string               // Hmy  Network
+	nodeUrl  string               // Astra Node url
+	shardId  int                  // Astra Shard ID
+	net      string               // Astra  Network
 }
 
 // New initializes a JavaScript interpreted runtime environment and sets defaults
@@ -242,14 +243,14 @@ func (c *Console) initPersonal(vm *goja.Runtime, bridge *bridge) {
 	if personal == nil || c.prompter == nil {
 		return
 	}
-	personal.Set("getListAccounts", jsre.MakeCallback(vm, bridge.HmyGetListAccounts))
-	personal.Set("signTransaction", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.HmySignTransaction)))
-	personal.Set("sendTransaction", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.HmySendTransaction)))
-	personal.Set("lockAccount", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.HmyLockAccount)))
-	personal.Set("importRawKey", jsre.MakeCallback(vm, bridge.HmyImportRawKey))
-	personal.Set("unlockAccount", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.HmyUnlockAccount)))
-	personal.Set("newAccount", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.HmyNewAccount)))
-	personal.Set("sign", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.HmySign)))
+	personal.Set("getListAccounts", jsre.MakeCallback(vm, bridge.AstraGetListAccounts))
+	personal.Set("signTransaction", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.AstraSignTransaction)))
+	personal.Set("sendTransaction", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.AstraSendTransaction)))
+	personal.Set("lockAccount", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.AstraLockAccount)))
+	personal.Set("importRawKey", jsre.MakeCallback(vm, bridge.AstraImportRawKey))
+	personal.Set("unlockAccount", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.AstraUnlockAccount)))
+	personal.Set("newAccount", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.AstraNewAccount)))
+	personal.Set("sign", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.AstraSign)))
 
 	_, err := vm.RunString(`Object.defineProperty(personal, "listAccounts", {get: personal.getListAccounts});`)
 	if err != nil {
@@ -263,8 +264,8 @@ func (c *Console) initEth(vm *goja.Runtime, bridge *bridge) {
 		return
 	}
 
-	eth.Set("sendTransaction", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.HmySendTransaction)))
-	eth.Set("signTransaction", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.HmySignTransaction)))
+	eth.Set("sendTransaction", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.AstraSendTransaction)))
+	eth.Set("signTransaction", jsre.MakeCallback(vm, bridge.callbackProtected(bridge.AstraSignTransaction)))
 }
 
 func (c *Console) clearHistory() {
@@ -318,7 +319,7 @@ func (c *Console) AutoCompleteInput(line string, pos int) (string, []string, str
 // Welcome show summary of current Geth instance and some metadata about the
 // console's available modules.
 func (c *Console) Welcome() {
-	message := "Welcome to the Hmy JavaScript console!\n\n"
+	message := "Welcome to the Astra JavaScript console!\n\n"
 
 	// Print some generic Geth metadata
 	if res, err := c.jsre.Run(`
@@ -326,7 +327,7 @@ func (c *Console) Welcome() {
 		try {
 			message += "coinbase: " + eth.coinbase + "\n";
 		} catch (err) {}
-		message += "at shard: " + hmy.shardID + "\n";
+		message += "at shard: " + astra.shardID + "\n";
 		message += "at block: " + eth.blockNumber + " (" + new Date(1000 * eth.getBlock(eth.blockNumber).timestamp) + ")\n";
 		try {
 			message += " datadir: " + admin.datadir + "\n";
@@ -530,7 +531,7 @@ func (b *bridge) callbackProtected(protectedFunc func(call jsre.Call) (goja.Valu
 	}
 }
 
-func (b *bridge) HmyGetListAccounts(call jsre.Call) (goja.Value, error) {
+func (b *bridge) AstraGetListAccounts(call jsre.Call) (goja.Value, error) {
 	var accounts = []string{}
 
 	for _, name := range store.LocalAccounts() {
@@ -544,7 +545,7 @@ func (b *bridge) HmyGetListAccounts(call jsre.Call) (goja.Value, error) {
 	return call.VM.ToValue(accounts), nil
 }
 
-func (b *bridge) HmySignTransaction(call jsre.Call) (goja.Value, error) {
+func (b *bridge) AstraSignTransaction(call jsre.Call) (goja.Value, error) {
 	txObj := call.Arguments[0].ToObject(call.VM)
 	password := call.Arguments[1].String()
 
@@ -623,7 +624,7 @@ func (b *bridge) HmySignTransaction(call jsre.Call) (goja.Value, error) {
 	}), nil
 }
 
-func (b *bridge) HmySendTransaction(call jsre.Call) (goja.Value, error) {
+func (b *bridge) AstraSendTransaction(call jsre.Call) (goja.Value, error) {
 	txObj := call.Arguments[0].ToObject(call.VM)
 	password := ""
 	if len(call.Arguments) > 1 {
@@ -689,7 +690,7 @@ func (b *bridge) HmySendTransaction(call jsre.Call) (goja.Value, error) {
 	return call.VM.ToValue(*ctrlr.TransactionHash()), nil
 }
 
-func (b *bridge) HmyLockAccount(call jsre.Call) (goja.Value, error) {
+func (b *bridge) AstraLockAccount(call jsre.Call) (goja.Value, error) {
 	address := call.Arguments[0].String()
 
 	_, _, err := store.LockKeystore(address)
@@ -700,7 +701,7 @@ func (b *bridge) HmyLockAccount(call jsre.Call) (goja.Value, error) {
 	return goja.Null(), nil
 }
 
-func (b *bridge) HmyImportRawKey(call jsre.Call) (goja.Value, error) {
+func (b *bridge) AstraImportRawKey(call jsre.Call) (goja.Value, error) {
 	privateKey := call.Arguments[0].String()
 	password := call.Arguments[1].String()
 
@@ -712,7 +713,7 @@ func (b *bridge) HmyImportRawKey(call jsre.Call) (goja.Value, error) {
 	return call.VM.ToValue(name), nil
 }
 
-func (b *bridge) HmyUnlockAccount(call jsre.Call) (goja.Value, error) {
+func (b *bridge) AstraUnlockAccount(call jsre.Call) (goja.Value, error) {
 	if len(call.Arguments) < 3 {
 		return nil, errors.New("arguments < 3")
 	}
@@ -728,11 +729,11 @@ func (b *bridge) HmyUnlockAccount(call jsre.Call) (goja.Value, error) {
 	return goja.Null(), nil
 }
 
-func (b *bridge) HmyNewAccount(call jsre.Call) (goja.Value, error) {
+func (b *bridge) AstraNewAccount(call jsre.Call) (goja.Value, error) {
 	return goja.Null(), nil
 }
 
-func (b *bridge) HmySign(call jsre.Call) (goja.Value, error) {
+func (b *bridge) AstraSign(call jsre.Call) (goja.Value, error) {
 	dataToSign := call.Arguments[0].String()
 	addressStr := call.Arguments[1].String()
 	password := call.Arguments[2].String()

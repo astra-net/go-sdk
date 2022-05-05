@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/astra-network/core/vm"
 	"github.com/astra-net/go-sdk/pkg/address"
 	"github.com/astra-net/go-sdk/pkg/common"
 	"github.com/astra-net/go-sdk/pkg/rpc"
@@ -17,8 +19,6 @@ import (
 	"github.com/astra-net/go-sdk/pkg/store"
 	"github.com/astra-net/go-sdk/pkg/transaction"
 	"github.com/astra-net/go-sdk/pkg/validation"
-	"github.com/astra-net/astra-network/accounts"
-	"github.com/astra-net/astra-network/core"
 
 	"github.com/spf13/cobra"
 )
@@ -26,8 +26,8 @@ import (
 const defaultTimeout = 40
 
 var (
-	fromAddress       oneAddress
-	toAddress         oneAddress
+	fromAddress       Address
+	toAddress         Address
 	amount            string
 	fromShardID       uint32
 	toShardID         uint32
@@ -152,7 +152,7 @@ func handlerForTransaction(txLog *transactionLog) error {
 
 	var gLimit uint64
 	if gasLimit == "" {
-		gLimit, err = core.IntrinsicGas([]byte(""), false, true, true, false)
+		gLimit, err = vm.IntrinsicGas([]byte(""), false, true, true, false)
 		if handlerForError(txLog, err) != nil {
 			return err
 		}
@@ -336,7 +336,7 @@ func init() {
 		Short: "Create and send a transaction",
 		Args:  cobra.ExactArgs(0),
 		Long: `
-Create a transaction, sign it, and send off to the Harmony blockchain
+Create a transaction, sign it, and send off to the Astra blockchain
 `,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if offlineSign {
@@ -403,8 +403,8 @@ Create a transaction, sign it, and send off to the Harmony blockchain
 		},
 	}
 
-	cmdTransfer.Flags().Var(&fromAddress, "from", "sender's one address, keystore must exist locally")
-	cmdTransfer.Flags().Var(&toAddress, "to", "the destination one address")
+	cmdTransfer.Flags().Var(&fromAddress, "from", "sender's address, keystore must exist locally")
+	cmdTransfer.Flags().Var(&toAddress, "to", "the destination address")
 	cmdTransfer.Flags().BoolVar(&dryRun, "dry-run", false, "do not send signed transaction")
 	cmdTransfer.Flags().BoolVar(&offlineSign, "offline-sign", false, "output offline signing")
 	cmdTransfer.Flags().BoolVar(&trueNonce, "true-nonce", false, "send transaction with on-chain nonce")
@@ -440,7 +440,7 @@ Get Nonce From a Account
 		},
 	}
 
-	cmdGetNonce.Flags().Var(&fromAddress, "from", "sender's one address, keystore must exist locally")
+	cmdGetNonce.Flags().Var(&fromAddress, "from", "sender's address, keystore must exist locally")
 	cmdGetNonce.Flags().Uint32Var(&fromShardID, "from-shard", 0, "source shard id")
 	RootCmd.AddCommand(cmdGetNonce)
 
@@ -449,7 +449,7 @@ Get Nonce From a Account
 		Short: "Send a Offline Signed transaction",
 		Args:  cobra.ExactArgs(0),
 		Long: `
-Send a offline signed to the Harmony blockchain
+Send a offline signed to the Astra blockchain
 `,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if givenFilePath == "" {

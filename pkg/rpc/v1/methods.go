@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	prefix = "hmy"
+	prefix = "astra"
 )
 
 // Method is a list of known RPC methods

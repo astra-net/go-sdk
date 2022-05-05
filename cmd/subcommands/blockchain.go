@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	addr oneAddress
+	addr Address
 	size int64
 )
 
@@ -40,9 +40,9 @@ Look up information about delegation
 
 	cmdBlockchain := &cobra.Command{
 		Use:   "blockchain",
-		Short: "Interact with the Harmony.one Blockchain",
+		Short: "Interact with the astranetwork.com Blockchain",
 		Long: `
-Query Harmony's blockchain for completed transaction, historic records
+Query Astra's blockchain for completed transaction, historic records
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()
@@ -77,7 +77,7 @@ High level information about each transaction for given account
 
 	subCommands := []*cobra.Command{{
 		Use:   "block-by-number",
-		Short: "Get a harmony blockchain block by block number",
+		Short: "Get a astra blockchain block by block number",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			noLatest = true
@@ -92,9 +92,9 @@ High level information about each transaction for given account
 		},
 	}, {
 		Use:   "protocol-version",
-		Short: "The version of the Harmony Protocol",
+		Short: "The version of the Astra Protocol",
 		Long: `
-Query Harmony's blockchain for high level metrics, queries
+Query Astra's blockchain for high level metrics, queries
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return request(rpc.Method.ProtocolVersion, []interface{}{})
@@ -146,7 +146,7 @@ High level information about transaction, like blockNumber, blockHash
 		Long:    `Current nonce number of a one-address`,
 		PreRunE: validateAddress,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return request(rpc.Method.GetTransactionCount, []interface{}{addr.address})
+			return request(rpc.Method.GetTransactionCount, []interface{}{addr})
 		},
 	}, {
 		Use:   "pool",

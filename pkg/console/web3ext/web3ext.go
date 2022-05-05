@@ -17,7 +17,7 @@ var Modules = map[string]string{
 	"txpool":     TxpoolJs,
 	"les":        LESJs,
 	"vflux":      VfluxJs,
-	"hmy":        HmyJs,
+	"astra":      AstraJs,
 }
 
 const ChequebookJs = `
@@ -904,9 +904,9 @@ web3._extend({
 });
 `
 
-const HmyJs = `
+const AstraJs = `
 web3._extend({
-	property: 'hmy',
+	property: 'astra',
 	methods:
 	[
 

@@ -1,15 +1,16 @@
 package cmd
 
 import (
-	ethereum_rpc "github.com/ethereum/go-ethereum/rpc"
-	"github.com/astra-net/go-sdk/pkg/common"
-	"github.com/astra-net/go-sdk/pkg/console"
-	"github.com/astra-net/go-sdk/pkg/rpc"
-	"github.com/mitchellh/go-homedir"
-	"github.com/spf13/cobra"
 	"log"
 	"os"
 	"path"
+
+	"github.com/astra-net/go-sdk/pkg/common"
+	"github.com/astra-net/go-sdk/pkg/console"
+	"github.com/astra-net/go-sdk/pkg/rpc"
+	ethereum_rpc "github.com/ethereum/go-ethereum/rpc"
+	"github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -30,13 +31,13 @@ func init() {
 
 func checkAndMakeDirIfNeeded() string {
 	userDir, _ := homedir.Dir()
-	hmyCLIDir := path.Join(userDir, common.DefaultConfigDirName, common.DefaultCommandAliasesDirName)
-	if _, err := os.Stat(hmyCLIDir); os.IsNotExist(err) {
+	astraCLIDir := path.Join(userDir, common.DefaultConfigDirName, common.DefaultCommandAliasesDirName)
+	if _, err := os.Stat(astraCLIDir); os.IsNotExist(err) {
 		// Double check with Leo what is right file persmission
-		os.Mkdir(hmyCLIDir, 0700)
+		os.Mkdir(astraCLIDir, 0700)
 	}
 
-	return hmyCLIDir
+	return astraCLIDir
 }
 
 // remoteConsole will connect to a remote node instance, attaching a JavaScript

@@ -1,35 +1,29 @@
 package cmd
 
 import (
-	"github.com/astra-net/go-sdk/pkg/address"
 	"github.com/astra-net/go-sdk/pkg/common"
 	"github.com/astra-net/go-sdk/pkg/validation"
-	"github.com/pkg/errors"
 )
 
-type oneAddress struct {
+type Address struct {
 	address string
 }
 
-func (oneAddress oneAddress) String() string {
-	return oneAddress.address
+func (address Address) String() string {
+	return address.address
 }
 
-func (oneAddress *oneAddress) Set(s string) error {
+func (address *Address) Set(s string) error {
 	err := validation.ValidateAddress(s)
 	if err != nil {
 		return err
 	}
-	_, err = address.Bech32ToAddress(s)
-	if err != nil {
-		return errors.Wrap(err, "not a valid one address")
-	}
-	oneAddress.address = s
+	address.address = s
 	return nil
 }
 
-func (oneAddress oneAddress) Type() string {
-	return "one-address"
+func (address Address) Type() string {
+	return "address"
 }
 
 type chainIDWrapper struct {

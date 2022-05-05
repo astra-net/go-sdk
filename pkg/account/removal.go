@@ -19,8 +19,8 @@ func RemoveAccount(name string) error {
 	}
 
 	uDir, _ := homedir.Dir()
-	hmyCLIDir := path.Join(uDir, common.DefaultConfigDirName, common.DefaultConfigAccountAliasesDirName)
-	accountDir := fmt.Sprintf("%s/%s", hmyCLIDir, name)
+	astraCLIDir := path.Join(uDir, common.DefaultConfigDirName, common.DefaultConfigAccountAliasesDirName)
+	accountDir := fmt.Sprintf("%s/%s", astraCLIDir, name)
 	os.RemoveAll(accountDir)
 
 	return nil

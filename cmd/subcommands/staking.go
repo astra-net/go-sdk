@@ -7,8 +7,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/astra-net/astra-network/accounts"
+	"github.com/astra-net/astra-network/accounts/keystore"
+	"github.com/astra-net/astra-network/common/denominations"
+	"github.com/astra-net/astra-network/core/vm"
+	"github.com/astra-net/astra-network/crypto/bls"
+	"github.com/astra-net/astra-network/numeric"
+	"github.com/astra-net/astra-network/shard"
+	"github.com/astra-net/astra-network/staking/effective"
+	staking "github.com/astra-net/astra-network/staking/types"
 	bls_core "github.com/astra-net/bls/ffi/go/bls"
 	"github.com/astra-net/go-sdk/pkg/address"
 	"github.com/astra-net/go-sdk/pkg/common"
@@ -17,15 +24,8 @@ import (
 	"github.com/astra-net/go-sdk/pkg/rpc"
 	"github.com/astra-net/go-sdk/pkg/store"
 	"github.com/astra-net/go-sdk/pkg/transaction"
-	"github.com/astra-net/astra-network/accounts"
-	"github.com/astra-net/astra-network/accounts/keystore"
-	"github.com/astra-net/astra-network/common/denominations"
-	"github.com/astra-net/astra-network/core"
-	"github.com/astra-net/astra-network/crypto/bls"
-	"github.com/astra-net/astra-network/numeric"
-	"github.com/astra-net/astra-network/shard"
-	"github.com/astra-net/astra-network/staking/effective"
-	staking "github.com/astra-net/astra-network/staking/types"
+	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -54,8 +54,8 @@ var (
 	maxTotalDelegation        string
 	stakingBlsPubKeys         []string
 	blsPubKeyDir              string
-	delegatorAddress          oneAddress
-	validatorAddress          oneAddress
+	delegatorAddress          Address
+	validatorAddress          Address
 	stakingAmount             string
 	active                    string
 	oneAsDec                  = numeric.NewDec(denominations.One)
@@ -99,7 +99,7 @@ func createStakingTransaction(nonce uint64, f staking.StakeMsgFulfiller) (*staki
 	var gLimit uint64
 	if gasLimit == "" {
 		isCreateValidator := directive == staking.DirectiveCreateValidator
-		gLimit, err = core.IntrinsicGas(data, false, true, true, isCreateValidator)
+		gLimit, err = vm.IntrinsicGas(data, false, true, true, isCreateValidator)
 		if err != nil {
 			return nil, err
 		}
@@ -116,7 +116,7 @@ func createStakingTransaction(nonce uint64, f staking.StakeMsgFulfiller) (*staki
 }
 
 func handleStakingTransaction(
-	stakingTx *staking.StakingTransaction, networkHandler *rpc.HTTPMessenger, signerAddress oneAddress,
+	stakingTx *staking.StakingTransaction, networkHandler *rpc.HTTPMessenger, signerAddress Address,
 ) error {
 	var (
 		ks     *keystore.KeyStore
@@ -184,7 +184,7 @@ func confirmTx(networkHandler *rpc.HTTPMessenger, confirmWaitTime uint32, txHash
 			for _, txError := range transactionErrors {
 				fmt.Println(txError.Error().Error())
 			}
-			fmt.Println("Try increasing the `timeout` or look for the transaction receipt with `hmy blockchain transaction-receipt <txHash>`")
+			fmt.Println("Try increasing the `timeout` or look for the transaction receipt with `astra blockchain transaction-receipt <txHash>`")
 			return fmt.Errorf("could not confirm %s even after %d seconds", txHash, confirmWaitTime)
 		}
 		transactionErrors, _ := transaction.GetError(txHash, networkHandler)
@@ -846,7 +846,7 @@ func init() {
 		Use:   "staking",
 		Short: "newvalidator, editvalidator, delegate, undelegate or redelegate",
 		Long: `
-Create a staking transaction, sign it, and send off to the Harmony blockchain
+Create a staking transaction, sign it, and send off to the Astra blockchain
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()

@@ -6,7 +6,6 @@ require (
 	github.com/astra-net/astra-network v0.0.0-20220330184351-ed34e9a19043
 	github.com/astra-net/bls v0.0.6
 	github.com/btcsuite/btcd v0.21.0-beta
-	github.com/btcsuite/btcutil v1.0.2
 	github.com/cosmos/cosmos-sdk v0.37.0
 	github.com/deckarep/golang-set v1.8.0
 	github.com/dop251/goja v0.0.0-20220408131256-ffe77e20c6f1

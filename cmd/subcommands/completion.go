@@ -12,7 +12,7 @@ func init() {
 		Short: "Generates bash completion scripts",
 		Long: `To load completion, run:
 
-    . <(hmy completion)
+    . <(astra completion)
 
 Add the line to your ~/.bashrc to enable completiony for each bash session.
 `,
