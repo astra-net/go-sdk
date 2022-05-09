@@ -2,7 +2,7 @@ package governance
 
 type governanceApi string
 
-const backendAddress = "https://snapshot.hmny.io/api/"
+const backendAddress = "https://snapshot.astranetwork.com/api/"
 
 const (
 	_ governanceApi = ""

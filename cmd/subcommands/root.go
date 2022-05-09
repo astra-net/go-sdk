@@ -33,7 +33,7 @@ var (
 	rpcPrefix       string
 	keyStoreDir     string
 	givenFilePath   string
-	endpoint        = regexp.MustCompile(`https://api\.s[0-9]\..*\.hmny\.io`)
+	endpoint        = regexp.MustCompile(`https://rpc\.s[0-9]\..*\.astranetwork\.com`)
 	request         = func(method string, params []interface{}) error {
 		if !noLatest {
 			params = append(params, "latest")
@@ -70,7 +70,7 @@ var (
 			if strings.HasPrefix(node, "https://") || strings.HasPrefix(node, "http://") ||
 				strings.HasPrefix(node, "ws://") {
 				//No op, already has protocol, respect protocol default ports.
-			} else if strings.HasPrefix(node, "api") || strings.HasPrefix(node, "ws") {
+			} else if strings.HasPrefix(node, "rpc") || strings.HasPrefix(node, "ws") {
 				node = "https://" + node
 			} else {
 				switch URLcomponents := strings.Split(node, ":"); len(URLcomponents) {
@@ -96,7 +96,7 @@ var (
 					}
 				} else if endpoint.Match([]byte(node)) {
 					chainName = endpointToChainID(node)
-				} else if strings.Contains(node, "api.astranetwork.com") {
+				} else if strings.Contains(node, "rpc.astranetwork.com") {
 					chainName = chainIDWrapper{chainID: &common.Chain.MainNet}
 				} else {
 					chainName = chainIDWrapper{chainID: &common.Chain.TestNet}
@@ -209,9 +209,9 @@ func Execute() {
 }
 
 func endpointToChainID(nodeAddr string) chainIDWrapper {
-	if strings.Contains(nodeAddr, ".t.") {
+	if strings.Contains(nodeAddr, ".m.") {
 		return chainIDWrapper{chainID: &common.Chain.MainNet}
-	} else if strings.Contains(nodeAddr, ".b.") {
+	} else if strings.Contains(nodeAddr, ".t.") {
 		return chainIDWrapper{chainID: &common.Chain.TestNet}
 	} else if strings.Contains(nodeAddr, ".os.") {
 		return chainIDWrapper{chainID: &common.Chain.PangaeaNet}
@@ -227,15 +227,21 @@ func endpointToChainID(nodeAddr string) chainIDWrapper {
 
 func validateAddress(cmd *cobra.Command, args []string) error {
 	// Check if input valid address
-	// Check if input is valid account name
-	if _, err := store.AddressFromAccountName(args[0]); err == nil {
-		return nil
-	}
+	tmpAddr := Address{}
+	if err := tmpAddr.Set(args[0]); err != nil {
+		// Check if input is valid account name
+		if acc, err := store.AddressFromAccountName(args[0]); err == nil {
+			addr = Address{acc}
+			return nil
+		}
 
-	addr := address.Parse(args[0])
-	if addr.String() == "" {
-		return fmt.Errorf("Invalid address/Invalid account name: %s", args[0])
-	}
+		Addr := address.Parse(args[0])
+		if Addr.String() == "" {
+			return fmt.Errorf("Invalid address/Invalid account name: %s", args[0])
+		}
 
+		tmpAddr = Address{Addr.String()}
+	}
+	addr = tmpAddr
 	return nil
 }
