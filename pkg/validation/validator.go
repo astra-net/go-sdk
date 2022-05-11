@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -46,6 +47,7 @@ func ValidShardID(shardID uint32, shardCount uint32) bool {
 // ValidateNodeConnection validates that the node can be connected to
 func ValidateNodeConnection(node string) error {
 	timeout := time.Duration(1 * time.Second)
+	node = strings.TrimPrefix(node, "https://") + ":443"
 	_, err := net.DialTimeout("tcp", node, timeout)
 	return err
 }
