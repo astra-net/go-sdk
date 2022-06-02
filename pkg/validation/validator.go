@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"net"
 	"regexp"
-	"strings"
 	"time"
 )
 
 var (
-	addressValidationRegexp = regexp.MustCompile(`^(one[a-zA-Z0-9]{39})|(0x[a-fA-F0-9]{40})`)
+	addressValidationRegexp = regexp.MustCompile(`^(0x[a-fA-F0-9]{40})`)
 )
 
 // ValidateAddress validates that an address is a valid base16 address (0x...)
@@ -47,7 +46,12 @@ func ValidShardID(shardID uint32, shardCount uint32) bool {
 // ValidateNodeConnection validates that the node can be connected to
 func ValidateNodeConnection(node string) error {
 	timeout := time.Duration(1 * time.Second)
-	node = strings.TrimPrefix(node, "https://") + ":443"
+	re, _ := regexp.Compile("https?://")
+	node = re.ReplaceAllString(node, "")
+
+	if match, _ := regexp.MatchString(":[0-9]+$", node); !match {
+		node += ":443"
+	}
 	_, err := net.DialTimeout("tcp", node, timeout)
 	return err
 }
